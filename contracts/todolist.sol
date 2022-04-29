@@ -2,12 +2,8 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-// @title Контракт списка задач
-
 contract TodoList {
-    // @dev completed - статус задачи(сделан, не сделан),
-    // @dev inDeadline - для фиксирования задач, которые небыли выполнены вовремя
-    // @dev timeLeft - таймер задачи (оставшееся время)
+
    struct Task {
         string name;
         bool completed;
@@ -17,14 +13,13 @@ contract TodoList {
 
     Task[] public tasks;
 
-    // @dev taskToOwner - (ID задачи => адрес пользователя, который создал задачу)
     mapping(uint => address) taskToOwner;
 
     modifier onlyOwner(uint _taskId) {
         require(msg.sender == taskToOwner[_taskId]);
         _;
     }
-    // @notice начиная со второго параметра, это время, которое дается на выполнение задачи
+
     function createTask(string memory _name, uint _days, uint _hours, uint _seconds) public {
         tasks.push(Task(
             _name,
@@ -40,10 +35,8 @@ contract TodoList {
     }
 
     function completeTask(uint _taskId) public onlyOwner(_taskId) {
-        // @notice требование было сделано, чтобы зря не платить gas, если задача уже выполнена
         require(!tasks[_taskId].completed);
         tasks[_taskId].completed = true;
-        // @dev проверка на то, что задача была выполнена за отведенное время
         if (block.timestamp > tasks[_taskId].timeLeft)
             tasks[_taskId].inDeadline = false;
     }
@@ -56,7 +49,6 @@ contract TodoList {
         return tasks[_taskId];
     }
 
-    // @dev функция вычисляет процент выполненных вовремя задач того кто вызвал эту функцию
     function myStatistic() public view returns(uint) {
         uint taskCounter = 0;
         uint completedInDeadlineCounter = 0;
