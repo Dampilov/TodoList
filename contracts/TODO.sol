@@ -4,7 +4,7 @@ pragma solidity >=0.7.0 <0.9.0;
 
 // @title Контракт списка задач
 
-contract TodoList {
+contract TODO {
     // @dev completed - статус задачи(сделан, не сделан),
     // @dev inDeadline - для фиксирования задач, которые небыли выполнены вовремя
     // @dev timeLeft - таймер задачи (оставшееся время)
@@ -31,17 +31,17 @@ contract TodoList {
         uint256 _days,
         uint256 _hours,
         uint256 _seconds
-    ) public {
+    ) external {
         tasks.push(Task(_name, false, true, block.timestamp + (_days * 1 days) + (_hours * 1 hours) + (_seconds * 1 seconds)));
         taskToOwner[tasks.length - 1] = msg.sender;
     }
 
-    function deleteTask(uint256 _taskId) public onlyOwner(_taskId) {
+    function deleteTask(uint256 _taskId) external onlyOwner(_taskId) {
         delete tasks[_taskId];
         delete taskToOwner[_taskId];
     }
 
-    function completeTask(uint256 _taskId) public onlyOwner(_taskId) {
+    function completeTask(uint256 _taskId) external onlyOwner(_taskId) {
         // @notice требование было сделано, чтобы зря не платить gas, если задача уже выполнена
         require(!tasks[_taskId].completed);
         tasks[_taskId].completed = true;
