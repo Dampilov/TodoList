@@ -2,8 +2,8 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-// @title через массив
-
+/// @title Task list contract
+/// @author Dampilov D.
 contract TODO {
     uint256 taskId;
     mapping(uint256 => address) taskToOwner;
