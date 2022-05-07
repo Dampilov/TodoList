@@ -2,71 +2,101 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-// @title Контракт списка задач
+// @title через массив
 
 contract TODO {
-    // @dev completed - статус задачи(сделан, не сделан),
-    // @dev inDeadline - для фиксирования задач, которые небыли выполнены вовремя
-    // @dev timeLeft - таймер задачи (оставшееся время)
+    uint256 taskId;
+    mapping(uint256 => address) taskToOwner;
+    mapping(uint256 => Task) public tasks;
+    mapping(uint256 => bool) public notInDeadline;
+
+    /// @notice Completed - task status
+    /// @notice InDeadline - label of tasks that were done on time
+    /// @notice TimeLeft - timer, time left
     struct Task {
         string name;
         bool completed;
-        bool inDeadline;
         uint256 timeLeft;
     }
 
-    Task[] public tasks;
-
-    // @dev taskToOwner - (ID задачи => адрес пользователя, который создал задачу)
-    mapping(uint256 => address) taskToOwner;
+    event NewTask(uint256 taskId, string name, uint256 timeLeft);
+    event TaskCompletion(uint256 taskId, string name, bool notInDeadline, uint256 completionTime);
+    event TaskRemoval(uint256 taskId, string name, bool completed, bool notInDeadline);
 
     modifier onlyOwner(uint256 _taskId) {
         require(msg.sender == taskToOwner[_taskId]);
         _;
     }
 
-    // @notice начиная со второго параметра, это время, которое дается на выполнение задачи
+    /// @dev Checking if the requested task exists
+    modifier checkEmptyTask(uint256 _taskId) {
+        require(tasks[_taskId].timeLeft > 0, "No such task");
+        _;
+    }
+
+    /// @dev Function creates a new task, and enters it into mapping tasks
+    /// @param _days, _hours The time given to complete the created task
     function createTask(
         string memory _name,
         uint256 _days,
-        uint256 _hours,
-        uint256 _seconds
+        uint256 _hours
     ) external {
-        tasks.push(Task(_name, false, true, block.timestamp + (_days * 1 days) + (_hours * 1 hours) + (_seconds * 1 seconds)));
-        taskToOwner[tasks.length - 1] = msg.sender;
+        require(bytes(_name).length > 0, "Empty name");
+        require(_days + _hours > 0, "Empty time");
+        tasks[taskId] = Task(_name, false, block.timestamp + (_days * 1 days) + (_hours * 1 hours));
+        taskToOwner[taskId] = msg.sender;
+        emit NewTask(taskId, _name, tasks[taskId].timeLeft);
+        taskId++;
     }
 
-    function deleteTask(uint256 _taskId) external onlyOwner(_taskId) {
+    /// @dev The function deletes the owner's task if such a task exists
+    function deleteTask(uint256 _taskId) external checkEmptyTask(_taskId) onlyOwner(_taskId) {
+        emit TaskRemoval(_taskId, tasks[_taskId].name, tasks[_taskId].completed, notInDeadline[_taskId]);
         delete tasks[_taskId];
         delete taskToOwner[_taskId];
     }
 
-    function completeTask(uint256 _taskId) external onlyOwner(_taskId) {
-        // @notice требование было сделано, чтобы зря не платить gas, если задача уже выполнена
+    /// @dev The function will change the status of the task as a completed task of the owner, if such a task exists
+    function completeTask(uint256 _taskId) external checkEmptyTask(_taskId) onlyOwner(_taskId) {
         require(!tasks[_taskId].completed);
         tasks[_taskId].completed = true;
-        // @dev проверка на то, что задача была выполнена за отведенное время
-        if (block.timestamp > tasks[_taskId].timeLeft) tasks[_taskId].inDeadline = false;
+        /// @dev Checking that the task was completed within the allotted time
+        if (block.timestamp > tasks[_taskId].timeLeft) notInDeadline[_taskId] = true;
+        emit TaskCompletion(_taskId, tasks[_taskId].name, notInDeadline[_taskId], block.timestamp);
     }
 
-    function taskList() public view returns (Task[] memory) {
-        return tasks;
-    }
-
-    function oneTask(uint256 _taskId) public view returns (Task memory) {
-        return tasks[_taskId];
-    }
-
-    // @dev функция вычисляет процент выполненных вовремя задач того кто вызвал эту функцию
-    function myStatistic() public view returns (uint256) {
-        uint256 taskCounter = 0;
-        uint256 completedInDeadlineCounter = 0;
-        for (uint256 i = 0; i < tasks.length; i++) {
-            if (tasks[i].completed && taskToOwner[i] == msg.sender) {
-                taskCounter++;
-                if (tasks[i].inDeadline) completedInDeadlineCounter++;
+    /// @dev Function to list all non-remote tasks
+    /// @return allTasks Fixed length array, contains a list of non-deleted tasks
+    function getTaskList() public view returns (Task[] memory allTasks) {
+        uint256 counter;
+        /// @dev Iterate through the mapping tasks to find out the length of the being created array
+        for (uint256 i; i < taskId; i++) {
+            if (tasks[i].timeLeft > 0) counter++;
+        }
+        allTasks = new Task[](counter);
+        counter = 0;
+        /// @dev Copy tasks from mapping tasks to array allTasks
+        for (uint256 i; i < taskId; i++) {
+            if (tasks[i].timeLeft > 0) {
+                allTasks[counter] = tasks[i];
+                counter++;
             }
         }
-        return (completedInDeadlineCounter * 100) / taskCounter;
+    }
+
+    /// @dev The function of viewing statistics by address
+    /// @param _taskOwner The address of the task owner whose statistics you want to view
+    /// @return Percentage of tasks completed before the deadline, or 0 if the owner has no completed tasks
+    function getStatisticByAddress(address _taskOwner) public view returns (uint256) {
+        uint256 taskCounter;
+        uint256 completedInDeadlineCounter;
+        for (uint256 i; i < taskId; i++) {
+            /// @dev If task is completed and task owner matches
+            if (tasks[i].completed && taskToOwner[i] == _taskOwner) {
+                taskCounter++;
+                if (!notInDeadline[i]) completedInDeadlineCounter++;
+            }
+        }
+        return taskCounter > 0 ? (completedInDeadlineCounter * 100) / taskCounter : 0;
     }
 }
