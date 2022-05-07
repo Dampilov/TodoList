@@ -8,7 +8,7 @@ contract TODO {
     uint256 taskId;
     mapping(uint256 => address) taskToOwner;
     mapping(uint256 => Task) public tasks;
-    mapping(uint256 => bool) public notInDeadline;
+    mapping(uint256 => bool) notInDeadline;
 
     /// @notice Completed - task status
     /// @notice InDeadline - label of tasks that were done on time
