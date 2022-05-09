@@ -1,5 +1,5 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
-import { ERC20Mock } from "./build/typechain"
+import { TODO } from "./build/typechain"
 
 declare module "mocha" {
     export interface Context {
@@ -13,8 +13,8 @@ declare module "mocha" {
         misha: SignerWithAddress
 
         // CONTRACTS
-        token1: ERC20Mock
-        token2: ERC20Mock
-        token3: ERC20Mock
+        token1: TODO
+        token2: TODO
+        token3: TODO
     }
 }

@@ -11,18 +11,18 @@ export async function prepareSigners(thisObject: Mocha.Context) {
     thisObject.misha = thisObject.signers[5]
 }
 
-export async function prepareERC20Tokens(thisObject: Mocha.Context, signer: SignerWithAddress) {
-    const tokenFactory = await ethers.getContractFactory("ERC20Mock")
+export async function prepareTODOTokens(thisObject: Mocha.Context, signer: SignerWithAddress) {
+    const tokenFactory = await ethers.getContractFactory("TODO")
 
-    const token1 = await tokenFactory.connect(signer).deploy("Token1", "TKN1", ethers.utils.parseUnits("100000", 6))
+    const token1 = await tokenFactory.connect(signer).deploy()
     await token1.deployed()
     thisObject.token1 = token1
 
-    const token2 = await tokenFactory.connect(signer).deploy("Token1", "TKN1", ethers.utils.parseUnits("100000", 6))
+    const token2 = await tokenFactory.connect(signer).deploy()
     await token2.deployed()
     thisObject.token2 = token2
 
-    const token3 = await tokenFactory.connect(signer).deploy("Token1", "TKN1", ethers.utils.parseUnits("100000", 6))
+    const token3 = await tokenFactory.connect(signer).deploy()
     await token3.deployed()
     thisObject.token3 = token3
 }

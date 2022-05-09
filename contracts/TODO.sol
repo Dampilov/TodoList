@@ -8,7 +8,7 @@ contract TODO {
     uint256 taskId;
     mapping(uint256 => address) taskToOwner;
     mapping(uint256 => Task) public tasks;
-    mapping(uint256 => bool) notInDeadline;
+    mapping(uint256 => bool) public notInDeadline;
 
     /// @notice Completed - task status
     /// @notice InDeadline - label of tasks that were done on time
@@ -24,7 +24,7 @@ contract TODO {
     event TaskRemoval(uint256 taskId, string name, bool completed, bool notInDeadline);
 
     modifier onlyOwner(uint256 _taskId) {
-        require(msg.sender == taskToOwner[_taskId]);
+        require(msg.sender == taskToOwner[_taskId], "Not task owner");
         _;
     }
 
