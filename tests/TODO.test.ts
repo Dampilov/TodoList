@@ -20,9 +20,9 @@ describe("Todo list contract", function () {
     describe("Task creation", function () {
         it("Should create task", async function () {
             const taskName = "Write module for contract"
-            await this.token1.connect(this.bob).createTask(taskName, 0, 1)
+            const { value } = await this.token1.connect(this.bob).createTask(taskName, 0, 1)
 
-            const bobTask = await this.token1.tasks(0)
+            const bobTask = await this.token1.tasks(value)
 
             expect(bobTask.name).to.equal(taskName)
             expect(bobTask.completed).to.equal(false)
@@ -52,6 +52,17 @@ describe("Todo list contract", function () {
             expect(bobTask.name).to.equal("")
             expect(bobTask.completed).to.equal(false)
             expect(bobTask.timeLeft).to.equal(0)
+        })
+
+        it("Should get correct task ID", async function () {
+            const taskName = "Write module for contract"
+            const id1 = await this.token1.connect(this.bob).createTask(taskName, 0, 1)
+            const id2 = await this.token1.connect(this.bob).createTask(taskName, 0, 1)
+            const id3 = await this.token1.connect(this.bob).createTask(taskName, 0, 1)
+
+            expect(id1.value).to.equal(0)
+            expect(id2.value).to.equal(1)
+            expect(id3.value).to.above(2)
         })
     })
 
@@ -208,9 +219,9 @@ describe("Todo list contract", function () {
 
             // Task creation
             const taskName = "Write module for contract"
-            await this.token1.connect(this.bob).createTask(taskName, 0, 1)
+            const id = await this.token1.connect(this.bob).createTask(taskName, 0, 1)
 
-            let bobTask = await this.token1.tasks(taskId)
+            let bobTask = await this.token1.tasks(0)
 
             expect(bobTask.name).to.equal(taskName)
             expect(bobTask.completed).to.equal(false)

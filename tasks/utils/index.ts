@@ -1,3 +1,8 @@
 import "./accounts"
 import "./mnemonic"
 import "./createTask"
+import "./taskList"
+import "./completeTask"
+import "./deleteTask"
+import "./getTask"
+import "./getStatistic"
