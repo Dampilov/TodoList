@@ -9,7 +9,7 @@ task("create-task", "Create a new task")
         const contract = await hre.run("get-contract", { name: "TODO" })
 
         try {
-            const id = await contract.createTask(name, days, hours)
+            await contract.createTask(name, days, hours)
             console.log(`Task created`)
         } catch (e) {
             console.log(e)

@@ -53,17 +53,6 @@ describe("Todo list contract", function () {
             expect(bobTask.completed).to.equal(false)
             expect(bobTask.timeLeft).to.equal(0)
         })
-
-        it("Should get correct task ID", async function () {
-            const taskName = "Write module for contract"
-            const id1 = await this.token1.connect(this.bob).createTask(taskName, 0, 1)
-            const id2 = await this.token1.connect(this.bob).createTask(taskName, 0, 1)
-            const id3 = await this.token1.connect(this.bob).createTask(taskName, 0, 1)
-
-            expect(id1.value).to.equal(0)
-            expect(id2.value).to.equal(1)
-            expect(id3.value).to.above(2)
-        })
     })
 
     describe("Task complition", function () {

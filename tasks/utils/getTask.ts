@@ -1,5 +1,4 @@
 import { task } from "hardhat/config"
-import { BigNumber } from "ethers"
 import "./getContract"
 
 task("get-task", "Prints the task with the indicated number")
@@ -11,17 +10,22 @@ task("get-task", "Prints the task with the indicated number")
             const { name, completed, timeLeft } = await contract.tasks(id)
             console.log(`\nTask name: ${name}`)
             console.log(`Task is completed: ${completed}`)
-            //console.log(`Time left: ${date}\n`)
+            console.log(`Time left: ${timeLeft}\n`)
+            /*
             const blockNumber = await hre.ethers.provider.getBlockNumber()
             const block = await hre.ethers.provider.getBlock(blockNumber)
             const left = timeLeft - block.timestamp
-            const minutes = ~~(left / 60)
-            const hours = ~~(minutes / 60)
-            const days = ~~(hours / 24)
+            const minutes = 60
+            const hours = 60 * minutes
+            const days = 24 * hours
+            const minutesLeft = ~~(left / 60)
+            const hoursLeft = ~~(minutesLeft / 60)
+            const daysLeft = ~~(hoursLeft / 24)
             console.log(`Time left:`)
-            console.log(`\tdays: ${days}`)
-            console.log(`\thours: ${hours}`)
-            console.log(`\tminutes: ${minutes}`)
+            console.log(`\tdays: ${daysLeft}`)
+            console.log(`\thours: ${hoursLeft}`)
+            console.log(`\tminutes: ${minutesLeft}`)
+            */
         } catch (e) {
             console.log(e)
         }
