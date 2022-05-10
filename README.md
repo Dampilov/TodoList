@@ -7,17 +7,11 @@
 
 ## Развернутый контракт в Ropsten:<br/>
 
-transaction hash: 0xd13f6c806c9ece538784c9925a602407f1a903cc71d950305cfe85730bc132d7<br/>
-Blocks: 2 Seconds: 13<br/>
-contract address: 0x67C208154718e5543F294B73F8BE717974D8e728<br/>
-block number: 12197487<br/>
-block timestamp: 1650051745<br/>
-account: 0x45C942FCe98eFf30b6002F7c2fC4860547B542c9<br/>
-balance: 0.297280027484768154<br/>
-gas used: 1087989 (0x1099f5)<br/>
-gas price: 2.500000014 gwei<br/>
-value sent: 0 ETH<br/>
-total cost: 0.002719972515231846 ETH<br/>
+ChainId: 3<br>
+Deployer: 0x45C942FCe98eFf30b6002F7c2fC4860547B542c9<br>
+deploying "TODO" (tx: 0x159cd9ec543663f3e2dc5fb6a2adb0ed7a5531f6b39cbd4a712a3830596e184c)...:<br>
+deployed at 0x028506C9E75552D19D0836F5260c5F8283C1eB0a <br>
+gas used: 904681<br>
 
 ## Hardhat tasks:
 
