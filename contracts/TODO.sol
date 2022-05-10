@@ -21,8 +21,8 @@ contract TODO {
     }
 
     event NewTask(uint256 indexed taskId, string indexed name, uint256 timeLeft, address indexed taskOwner);
-    event TaskCompletion(uint256 indexed taskId, string indexed name, bool notInDeadline, uint256 indexed completionTime);
-    event TaskRemoval(uint256 indexed taskId, string indexed name, bool completed, bool indexed notInDeadline);
+    event TaskCompletion(uint256 indexed taskId, string name, bool notInDeadline, uint256 indexed completionTime, address indexed taskOwner);
+    event TaskRemoval(uint256 indexed taskId, string name, bool completed, bool indexed notInDeadline, address indexed taskOwner);
 
     modifier onlyOwner(uint256 _taskId) {
         require(msg.sender == taskToOwner[_taskId], "Not task owner");
@@ -52,9 +52,13 @@ contract TODO {
 
     /// @dev The function deletes the owner's task if such a task exists
     function deleteTask(uint256 _taskId) external checkEmptyTask(_taskId) onlyOwner(_taskId) {
-        emit TaskRemoval(_taskId, tasks[_taskId].name, tasks[_taskId].completed, notInDeadline[_taskId]);
+        string memory name = tasks[_taskId].name;
+        bool completed = tasks[_taskId].completed;
+        bool outsideDeadline = notInDeadline[_taskId];
         delete tasks[_taskId];
         delete taskToOwner[_taskId];
+        delete notInDeadline[_taskId];
+        emit TaskRemoval(_taskId, name, completed, outsideDeadline, msg.sender);
     }
 
     /// @dev The function will change the status of the task as a completed task of the owner, if such a task exists
@@ -63,7 +67,7 @@ contract TODO {
         tasks[_taskId].completed = true;
         /// @dev Checking that the task was completed within the allotted time
         if (block.timestamp > tasks[_taskId].timeLeft) notInDeadline[_taskId] = true;
-        emit TaskCompletion(_taskId, tasks[_taskId].name, notInDeadline[_taskId], block.timestamp);
+        emit TaskCompletion(_taskId, tasks[_taskId].name, notInDeadline[_taskId], block.timestamp, msg.sender);
     }
 
     /// @dev Function to list all non-remote tasks
