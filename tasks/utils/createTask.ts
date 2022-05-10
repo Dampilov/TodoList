@@ -10,7 +10,7 @@ task("create-task", "Create a new task")
 
         try {
             await contract.createTask(name, days, hours)
-            console.log(`Task created`)
+            console.log("Task created")
         } catch (e) {
             console.log(e)
         }

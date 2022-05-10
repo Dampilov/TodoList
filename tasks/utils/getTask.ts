@@ -7,8 +7,9 @@ task("get-task", "Prints the task with the indicated number")
         const contract = await hre.run("get-contract", { name: "TODO" })
 
         try {
-            const { name, completed, timeLeft } = await contract.tasks(id)
-            console.log(`\nTask name: ${name}`)
+            const { taskId, name, completed, timeLeft } = await contract.tasks(id)
+            console.log(`\nTask ID: ${taskId}`)
+            console.log(`Task name: ${name}`)
             console.log(`Task is completed: ${completed}`)
             console.log(`Time left: ${timeLeft}\n`)
             /*

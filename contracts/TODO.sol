@@ -15,6 +15,7 @@ contract TODO {
     /// @notice InDeadline - label of tasks that were done on time
     /// @notice TimeLeft - timer, time left
     struct Task {
+        uint256 taskId;
         string name;
         bool completed;
         uint256 timeLeft;
@@ -44,7 +45,7 @@ contract TODO {
     ) external {
         require(bytes(_name).length > 0, "Empty name");
         require(_days + _hours > 0, "Empty time");
-        tasks[taskId] = Task(_name, false, block.timestamp + (_days * 1 days) + (_hours * 1 hours));
+        tasks[taskId] = Task(taskId, _name, false, block.timestamp + (_days * 1 days) + (_hours * 1 hours));
         taskToOwner[taskId] = msg.sender;
         emit NewTask(taskId, _name, tasks[taskId].timeLeft, msg.sender);
         taskId++;
@@ -63,7 +64,7 @@ contract TODO {
 
     /// @dev The function will change the status of the task as a completed task of the owner, if such a task exists
     function completeTask(uint256 _taskId) external checkEmptyTask(_taskId) onlyOwner(_taskId) {
-        require(!tasks[_taskId].completed);
+        require(!tasks[_taskId].completed, "Already completed");
         tasks[_taskId].completed = true;
         /// @dev Checking that the task was completed within the allotted time
         if (block.timestamp > tasks[_taskId].timeLeft) notInDeadline[_taskId] = true;

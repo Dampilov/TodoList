@@ -11,8 +11,9 @@ task("complete-task", "Complete a choosen task")
             await contract.completeTask(id)
             console.log("\nTask completed")
 
-            const { name, completed, timeLeft } = await contract.tasks(id)
-            console.log(`\nTask name: ${name}`)
+            const { taskId, name, completed, timeLeft } = await contract.tasks(id)
+            console.log(`\nTask ID: ${taskId}`)
+            console.log(`Task name: ${name}`)
             console.log(`Task is completed: ${completed}`)
             console.log(`Time left: ${timeLeft}\n`)
         } catch (e) {
