@@ -6,6 +6,7 @@ pragma solidity >=0.7.0 <0.9.0;
 /// @author Dampilov D.
 contract TODO {
     uint256 taskId;
+
     mapping(uint256 => address) taskToOwner;
     mapping(uint256 => Task) public tasks;
     mapping(uint256 => bool) public notInDeadline;
@@ -19,9 +20,9 @@ contract TODO {
         uint256 timeLeft;
     }
 
-    event NewTask(uint256 taskId, string name, uint256 timeLeft);
-    event TaskCompletion(uint256 taskId, string name, bool notInDeadline, uint256 completionTime);
-    event TaskRemoval(uint256 taskId, string name, bool completed, bool notInDeadline);
+    event NewTask(uint256 indexed taskId, string indexed name, uint256 timeLeft, address indexed taskOwner);
+    event TaskCompletion(uint256 indexed taskId, string indexed name, bool notInDeadline, uint256 indexed completionTime);
+    event TaskRemoval(uint256 indexed taskId, string indexed name, bool completed, bool indexed notInDeadline);
 
     modifier onlyOwner(uint256 _taskId) {
         require(msg.sender == taskToOwner[_taskId], "Not task owner");
@@ -45,7 +46,7 @@ contract TODO {
         require(_days + _hours > 0, "Empty time");
         tasks[taskId] = Task(_name, false, block.timestamp + (_days * 1 days) + (_hours * 1 hours));
         taskToOwner[taskId] = msg.sender;
-        emit NewTask(taskId, _name, tasks[taskId].timeLeft);
+        emit NewTask(taskId, _name, tasks[taskId].timeLeft, msg.sender);
         taskId++;
     }
 
