@@ -8,10 +8,12 @@ task("task-list", "Prints the list of tasks", async (taskArgs, hre) => {
         const tasks = await contract.getTaskList()
 
         for (const { taskId, name, completed, timeLeft } of tasks) {
-            console.log(`Task ID: ${taskId}`)
-            console.log(`Task name: ${name}`)
-            console.log(`Task is completed: ${completed}`)
-            console.log(`Deadline: ${new Date(timeLeft * 1000)}\n`)
+            await hre.run("print", {
+                id: taskId.toString(),
+                name,
+                completed: completed.toString(),
+                timeLeft: timeLeft.toString(),
+            })
         }
     } catch (e) {
         console.log(e)

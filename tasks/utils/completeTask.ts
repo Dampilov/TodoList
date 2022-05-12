@@ -12,10 +12,12 @@ task("complete-task", "Complete a choosen task")
             console.log("\nTask completed")
 
             const { taskId, name, completed, timeLeft } = await contract.tasks(id)
-            console.log(`\nTask ID: ${taskId}`)
-            console.log(`Task name: ${name}`)
-            console.log(`Task is completed: ${completed}`)
-            console.log(`Deadline: ${new Date(timeLeft * 1000)}\n`)
+            await hre.run("print", {
+                id: taskId.toString(),
+                name,
+                completed: completed.toString(),
+                timeLeft: timeLeft.toString(),
+            })
         } catch (e) {
             console.log(e)
         }
