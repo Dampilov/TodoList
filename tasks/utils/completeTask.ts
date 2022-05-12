@@ -15,7 +15,7 @@ task("complete-task", "Complete a choosen task")
             console.log(`\nTask ID: ${taskId}`)
             console.log(`Task name: ${name}`)
             console.log(`Task is completed: ${completed}`)
-            console.log(`Time left: ${timeLeft}\n`)
+            console.log(`Deadline: ${new Date(timeLeft * 1000)}\n`)
         } catch (e) {
             console.log(e)
         }

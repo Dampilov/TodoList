@@ -11,7 +11,7 @@ task("task-list", "Prints the list of tasks", async (taskArgs, hre) => {
             console.log(`Task ID: ${taskId}`)
             console.log(`Task name: ${name}`)
             console.log(`Task is completed: ${completed}`)
-            console.log(`Time left: ${timeLeft}\n`)
+            console.log(`Deadline: ${new Date(timeLeft * 1000)}\n`)
         }
     } catch (e) {
         console.log(e)
